@@ -25,6 +25,11 @@ class ElfDetails:
 
         return False
 
+    # Returns true if the max value of this elf range is less than the other; indicating
+    # that the elves are mutually exclusive
+    def elf_mutually_exclusive(self, other_elf):
+        return self.max_val < other_elf.min_val
+
 
 if __name__ == '__main__':
     if len(sys.argv) < 1:
@@ -33,14 +38,23 @@ if __name__ == '__main__':
     with open(sys.argv.pop()) as csvfile:
         reader = csv.reader(csvfile)
 
-        overlapping_elf_pairs = []
+        fully_encompassed_pairs = []
+        overlapping_pairs = []
+        total_pairs = 0
         for row in reader:
+            total_pairs += 1
             elf1 = ElfDetails(int(row[0].split('-')[0]),
                               int(row[0].split('-')[1]))
             elf2 = ElfDetails(int(row[1].split('-')[0]),
                               int(row[1].split('-')[1]))
 
             if elf1.elf_encompasses_other(elf2) or elf2.elf_encompasses_other(elf1):
-                overlapping_elf_pairs.append({'elf1': elf1, 'elf2': elf2})
+                fully_encompassed_pairs.append({'elf1': elf1, 'elf2': elf2})
 
-        print(len(overlapping_elf_pairs))
+            # Part 2 - determine mutual exclusivity
+            if elf1.elf_mutually_exclusive(elf2) or elf2.elf_mutually_exclusive(elf1):
+                overlapping_pairs.append({'elf1': elf1, 'elf2': elf2})
+
+        print("Total pairs = %s" % total_pairs)
+        print("Overlapping elf pairs = %s" % len(fully_encompassed_pairs))
+        print("Overlapping elf pairs = %s" % (total_pairs - len(overlapping_pairs)))

@@ -61,7 +61,7 @@ if __name__ == '__main__':
             column_num = 0
             # When I encounter empty row, stacks are fully initialized
             if len(row) == 0:
-                print(initialized_stacks)
+                # print(initialized_stacks)
                 crate_arrangement_pt1 = CrateArrangement(initialized_stacks)
                 crate_arrangement_pt2 = CrateArrangement(copy.deepcopy(initialized_stacks))
             # When crate arrangement is non-empty, now follow instructions

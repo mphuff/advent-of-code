@@ -23,8 +23,6 @@ class DirectoryEntry:
     def add_child(self, child_entry):
         self.children[child_entry.filename] = child_entry
         self.calculated_total_size = self.get_size_for_dir()
-        # if child_entry.entry_type == DirectoryEntryType.FILE:
-        #     self.calculated_total_size += child_entry.size
 
     def get_size_for_dir(self):
         if self.entry_type == DirectoryEntryType.FILE:
@@ -70,13 +68,10 @@ class CommandProcessor:
 
     # Assume first line "changes directory" to /
     def __process_command(self, __all_parts):
-        # print(__all_parts)
         if __all_parts[0] == "$":
             # ls command, no explicit action to take
             self.__current_command = __all_parts[1]
-            # print("command - %s" % __all_parts[1])
             if __all_parts[1] == "cd":
-                # print("\tchanging directory to %s" % __all_parts[2])
                 if __all_parts[2] == '..':
                     self.__current_directory = self.__current_directory.parent_directory
                 elif __all_parts[2] == '/':
@@ -119,7 +114,6 @@ if __name__ == '__main__':
         reader = csv.reader(csvfile, delimiter=' ')
 
         all_lines = []
-
         for line in reader:
             all_lines.append(line)
 

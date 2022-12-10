@@ -18,11 +18,10 @@ class DirectoryEntry:
         self.entry_type = entry_type
         self.parent_directory = parent_directory
         self.children = {}
-        self.calculated_total_size = 0
 
     def add_child(self, child_entry):
-        self.children[child_entry.filename] = child_entry
-        self.calculated_total_size = self.get_size_for_dir()
+        if child_entry.filename not in self.children:
+            self.children[child_entry.filename] = child_entry
 
     def get_size_for_dir(self):
         if self.entry_type == DirectoryEntryType.FILE:
@@ -45,8 +44,8 @@ class DirectoryEntry:
             return "%s/%s" % (self.parent_directory.calc_directory_path(), self.filename)
 
     def __str__(self):
-        return "[%s - %s, size = %s (calculated = %s), children = %s]" % \
-               (self.entry_type, self.filename, self.size, self.calculated_total_size, len(self.children))
+        return "[%s - %s, size = %s, children = %s]" % \
+               (self.entry_type, self.filename, self.size, len(self.children))
 
 
 class CommandProcessor:
@@ -95,7 +94,7 @@ class CommandProcessor:
         all_dirs = []
         traverse_directory = self.__root_directory if directory is None else directory
         for child in traverse_directory.children.values():
-            if child.entry_type == DirectoryEntryType.DIR and child.calculated_total_size <= size_to_find:
+            if child.entry_type == DirectoryEntryType.DIR and child.get_size_for_dir() <= size_to_find:
                 all_dirs.append(child)
             child_qualifying_dirs = self.find_dirs_with_max_size(size_to_find, child)
             for qualified_dir in child_qualifying_dirs:
